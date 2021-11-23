@@ -38,7 +38,7 @@ services:
       - koomtact-network
 
   nginx:
-    image: nginx
+    build: ./docker/nginx
     volumes:
       - ./:/workspace
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
@@ -61,9 +61,9 @@ services:
       - "${MYSQL_PORT}:3306"
     networks:
       - koomtact-network
-  
+
   redis:
-      build: 
+      build:
         context: ./docker/redis
         args:
           - REDIS_VERSION=${REDIS_VERSION}
