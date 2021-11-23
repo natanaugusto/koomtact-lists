@@ -1,0 +1,75 @@
+version: "3.5"
+
+networks:
+  koomtact-network:
+    driver: bridge
+
+volumes:
+  mysql:
+    driver: local
+  redis:
+    driver: local
+
+services:
+  php-fpm:
+    build:
+      context: ./docker/php-fpm
+      args:
+        - WORKSPACE_USER=${WORKSPACE_USER}
+        - WORKSPACE_INSTALL_COMPOSER=${WORKSPACE_INSTALL_COMPOSER}
+        - WORKSPACE_COMPOSER_HASH=${WORKSPACE_COMPOSER_HASH}
+        - WORKSPACE_INSTALL_ZSH=${WORKSPACE_INSTALL_ZSH}
+        - WORKSPACE_GITHUB_SSH_KEY=${WORKSPACE_GITHUB_SSH_KEY}
+        - HOST_GITCONFIG_PATH=${HOST_GITCONFIG_PATH}
+        - HOST_SSH_PATH=${HOST_SSH_PATH}
+        - PHP_VERSION=${PHP_VERSION}
+        - http_proxy
+        - https_proxy
+        - no_proxy
+    volumes:
+      - ./:/workspace
+      - ${HOST_GITCONFIG_PATH}:/home/${WORKSPACE_USER}/.gitconfig
+      - ${HOST_SSH_PATH}:/home/${WORKSPACE_USER}/.ssh
+    ports:
+      - "9001:9001"
+    expose:
+      - "${PHP_FPM_PORT}"
+    networks:
+      - koomtact-network
+
+  nginx:
+    image: nginx
+    volumes:
+      - ./:/workspace
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/logs/nginx:/var/log/nginx
+      - ./docker/nginx/sites:/etc/nginx/sites-available
+    ports:
+      - "${NGINX_PORT}:80"
+    networks:
+      - koomtact-network
+
+  mysql:
+    image: mysql:${MYSQL_VERSION}
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_PORT}:3306"
+    networks:
+      - koomtact-network
+  
+  redis:
+      build: 
+        context: ./docker/redis
+        args:
+          - REDIS_VERSION=${REDIS_VERSION}
+      volumes:
+        - ./docker/.data/redis:/data
+      ports:
+        - "${REDIS_PORT}:6379"
+      networks:
+        - koomtact-network
