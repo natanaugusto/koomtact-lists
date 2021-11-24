@@ -32,19 +32,19 @@ class FileImportTest extends TestCase
             ));
     }
 
-    public function test_get_from_to()
-    {
-        $file = FileImport::factory()->create([
-            'user_id' => $this->user->id,
-            'path' => self::$filePath,
-        ]);
-        $response = $this->actingAs($this->user)
-            ->get(route(
-                'file.from-to',
-                ['hash' => $file->hash]
-            ));
-        $response->assertStatus(SymfonyResponse::HTTP_OK);
-    }
+//    public function test_get_from_to()
+//    {
+//        $file = FileImport::factory()->create([
+//            'user_id' => $this->user->id,
+//            'path' => self::$filePath,
+//        ]);
+//        $response = $this->actingAs($this->user)
+//            ->get(route(
+//                'file.from-to',
+//                ['hash' => $file->hash]
+//            ));
+//        $response->assertStatus(SymfonyResponse::HTTP_OK);
+//    }
 
     protected function setUp(): void
     {
