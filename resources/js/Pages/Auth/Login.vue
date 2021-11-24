@@ -26,6 +26,10 @@
         </div>
 
         <div class="flex items-center justify-end mt-4">
+            <BreezeButtonLink :href="'register'">
+                Register
+            </BreezeButtonLink>
+
             <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900">
                 Forgot your password?
             </Link>
@@ -39,6 +43,7 @@
 
 <script>
 import BreezeButton from '@/Components/Button.vue'
+import BreezeButtonLink from '@/Components/ButtonLink.vue'
 import BreezeCheckbox from '@/Components/Checkbox.vue'
 import BreezeGuestLayout from '@/Layouts/Guest.vue'
 import BreezeInput from '@/Components/Input.vue'
@@ -51,6 +56,7 @@ export default {
 
     components: {
         BreezeButton,
+        BreezeButtonLink,
         BreezeCheckbox,
         BreezeInput,
         BreezeLabel,
