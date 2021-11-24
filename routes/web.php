@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FileImportsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,7 +19,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', $dash)->name('dashboard');
 
     Route::name('file.')->prefix('/file')->group(function () {
-        Route::post('/import', fn() => response()->json())->name('import');
+        Route::post('/import', [FileImportsController::class, 'import'])
+            ->name('import');
+        Route::get('/from-to/{hash}', [FileImportsController::class, 'fromTo'])
+            ->name('from-to');
     });
 });
 require __DIR__ . '/auth.php';
