@@ -18,6 +18,7 @@ class CreateFileImportsTable extends Migration
             $table->foreignId('user_id');
             $table->uuid('hash');
             $table->string('path');
+            $table->string('handler');
             $table->timestamps();
         });
     }

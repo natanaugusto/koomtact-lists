@@ -18,6 +18,9 @@ class FileImportFactory extends Factory
             'user_id' => User::factory(),
             'hash' => $this->faker->uuid(),
             'path' => $this->faker->filePath(),
+            'handler' => $this->faker->randomElement(
+                \App\Services\FileImportsService::$mimeTypeHandlers
+            )
         ];
     }
 }

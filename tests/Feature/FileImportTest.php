@@ -15,9 +15,11 @@ class FileImportTest extends TestCase
 
     protected User $user;
 
+    protected static string $filePath = __DIR__ . DIRECTORY_SEPARATOR . 'sample.csv';
+
     public function test_post_file_import()
     {
-        $content = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'sample.csv');
+        $content = file_get_contents(self::$filePath);
         $response = $this->actingAs($this->user)
             ->post(route('file.import'), [
                 'file' => UploadedFile::fake()->createWithContent('test.csv', $content),
@@ -32,7 +34,10 @@ class FileImportTest extends TestCase
 
     public function test_get_from_to()
     {
-        $file = FileImport::factory()->create();
+        $file = FileImport::factory()->create([
+            'user_id' => $this->user->id,
+            'path' => self::$filePath,
+        ]);
         $response = $this->actingAs($this->user)
             ->get(route(
                 'file.from-to',
