@@ -13,11 +13,12 @@ class FileImportTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected User $user;
+
     public function test_post_file_import()
     {
-        $user = User::factory()->create();
         $content = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'sample.csv');
-        $response = $this->actingAs($user)
+        $response = $this->actingAs($this->user)
             ->post(route('file.import'), [
                 'file' => UploadedFile::fake()->createWithContent('test.csv', $content),
             ]);
@@ -27,5 +28,22 @@ class FileImportTest extends TestCase
                 'file.from-to',
                 ['hash' => FileImport::latest()->first()->hash]
             ));
+    }
+
+    public function test_get_from_to()
+    {
+        $file = FileImport::factory()->create();
+        $response = $this->actingAs($this->user)
+            ->get(route(
+                'file.from-to',
+                ['hash' => $file->hash]
+            ));
+        $response->assertStatus(SymfonyResponse::HTTP_OK);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->user = User::factory()->create();
     }
 }

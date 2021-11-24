@@ -11,6 +11,7 @@ class FileImportsController extends Controller
     public function import(Request $request): RedirectResponse
     {
         $file = new FileImport();
+        $file->user_id = $request->user()->id;
         $file->path = $request->file('file')->store('tmp');
         $file->save();
         return response()->redirectTo(route(
@@ -21,6 +22,6 @@ class FileImportsController extends Controller
 
     public function fromTo(Request $request, string $hash)
     {
-        dd($hash);
+        return response(null);
     }
 }

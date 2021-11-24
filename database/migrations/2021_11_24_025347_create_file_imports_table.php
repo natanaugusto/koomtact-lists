@@ -15,6 +15,7 @@ class CreateFileImportsTable extends Migration
     {
         Schema::create('file_imports', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id');
             $table->uuid('hash');
             $table->string('path');
             $table->timestamps();
