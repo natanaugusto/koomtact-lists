@@ -13,8 +13,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::middleware(['auth'])->group(function () {
-    $dash = fn () => view('dashboard');
+    $dash = fn() => view('dashboard');
     Route::get('/', $dash);
     Route::get('/dashboard', $dash)->name('dashboard');
+
+    Route::name('file.')->prefix('/file')->group(function () {
+        Route::post('/import', fn() => response()->json())->name('import');
+    });
 });
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
