@@ -2,10 +2,11 @@
 
 namespace App\Handlers;
 
+use App\Contracts\FileImportHandler;
 use App\Models\FileImport;
 use League\Csv\Reader;
 
-class CvsHandler
+class CvsHandler implements FileImportHandler
 {
     /**
      * @var FileImport $fileImport
@@ -26,12 +27,19 @@ class CvsHandler
         $this->handler = Reader::createFromPath($this->fileImport->path);
     }
 
-    /**
-     * @return string[]
-     */
-    public function getHeader(): array
+    public function getFrom(): array
     {
         $this->handler->setHeaderOffset(0);
         return $this->handler->getHeader();
+    }
+
+    public function getTo(object $to): array
+    {
+        return $to->getFillable();
+    }
+
+    public function process(): void
+    {
+        // TODO: Implement process() method.
     }
 }

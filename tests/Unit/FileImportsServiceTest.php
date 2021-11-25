@@ -35,11 +35,15 @@ class FileImportsServiceTest extends TestCase
             'path' => $this->getPath('sample.csv')
         ]);
 
-        $fromTo = $this->service->getFromToColumns($fileImport->hash, Contact::class);
-        $this->assertIsArray($fromTo['file']);
-        $this->assertEquals($fromTo['file'], $this->getIncludeArray('sample_csv_header.php'));
-        $this->assertIsArray($fromTo['model']);
-        $this->assertEquals($fromTo['model'], (new Contact())->getFillable());
+        // Another approach
+        // $fromTo = $this->service->getFromToColumns(Contact::class, $fileImport->hash);
+        $fromTo = $this->service
+            ->setFileImport($fileImport)
+            ->getFromToColumns(Contact::class);
+        $this->assertIsArray($fromTo['from']);
+        $this->assertEquals($fromTo['from'], $this->getIncludeArray('sample_csv_header.php'));
+        $this->assertIsArray($fromTo['to']);
+        $this->assertEquals($fromTo['to'], (new Contact())->getFillable());
     }
 
     protected function setUp(): void

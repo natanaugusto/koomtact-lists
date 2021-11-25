@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Contracts\FileImportHandler;
 use App\Handlers\CvsHandler;
 use App\Models\FileImport;
 use App\Models\User;
@@ -20,11 +21,20 @@ class FileImportsService
         'text/csv' => CvsHandler::class,
         'application/csv' => CvsHandler::class,
     ];
+    /**
+     * @var User
+     */
     protected User $user;
+    protected FileImport $fileImport;
 
-    public function __construct(User $user)
+    /**
+     * @param User|null $user
+     */
+    public function __construct(User $user = null)
     {
-        $this->user = $user;
+        if (!empty($user)) {
+            $this->user = $user;
+        }
     }
 
     /**
@@ -34,34 +44,47 @@ class FileImportsService
      */
     public function create(UploadedFile $file): FileImport
     {
-        $import = new FileImport();
-        $import->user_id = $this->user->id;
+        $fileImport = new FileImport();
+        $fileImport->user_id = $this->user->id;
         // That's seems ugly
-        $import->path = storage_path(
+        $fileImport->path = storage_path(
             'app'
             . DIRECTORY_SEPARATOR
             . $file->store('tmp')
         );
-        $import->type = $file->getMimeType();
-        $import->save();
-        return $import;
+        $fileImport->type = $file->getMimeType();
+        $fileImport->save();
+        $this->setFileImport($fileImport);
+        return $fileImport;
+    }
+
+    /**
+     * @param FileImport $fileImport
+     * @return $this
+     */
+    public function setFileImport(FileImport $fileImport): self
+    {
+        $this->fileImport = $fileImport;
+        return $this;
     }
 
     /**
      * Return a multidimensional array with the file and the model columns
-     * @param string $hash
      * @param string $model
-     * @return array ['file', 'model']
+     * @param ?string $hash
+     * @return array ['from', 'to']
      */
-    #[ArrayShape(['file' => "object", 'model' => ""])]
-    public function getFromToColumns(string $hash, string $model): array
+    #[ArrayShape(['from' => [], 'to' => []])]
+    public function getFromToColumns(string $model, ?string $hash = null): array
     {
+        $hash = $hash ?? $this->fileImport->hash;
         if (!is_subclass_of($model, Model::class)) {
             throw new ModelNotFoundException("The {$model} model was not found");
         }
+        $handler = $this->getHandlerByHash($hash);
         return [
-            'file' => $this->getByHash($hash)->getHeader(),
-            'model' => (new $model)->getFillable(),
+            'from' => $handler->getFrom(),
+            'to' => $handler->getTo(new $model),
         ];
     }
 
@@ -69,11 +92,33 @@ class FileImportsService
      * Return a FileImport entry based on the hash
      * @param string $hash
      * @param bool $model
-     * @return object
+     * @return FileImportHandler|Model
      */
-    public function getByHash(string $hash, bool $model = false): object
+    public function getHandlerByHash(string $hash, bool $model = false): FileImportHandler|Model
     {
-        $file = FileImport::byHashUser($hash, $this->user)->firstOrFail();
-        return $model ? $file : new self::$mimeTypeHandlers[$file->type]($file);
+        $this->setFileImport(FileImport::byHashUser($hash, $this->user)->firstOrFail());
+        return $model
+            ? $this->fileImport
+            : $this->getHandlerInstance();
+    }
+
+    /**
+     * @param FileImport|null $fileImport
+     * @return FileImportHandler
+     */
+    public function getHandlerInstance(?FileImport $fileImport = null): FileImportHandler
+    {
+        $fileImport = $fileImport ?? $this->fileImport;
+        return new self::$mimeTypeHandlers[$fileImport->type]($fileImport);
+    }
+
+    /**
+     * @param User $user
+     * @return $this
+     */
+    public function setUser(User $user): self
+    {
+        $this->user = $user;
+        return $this;
     }
 }

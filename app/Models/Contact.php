@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Contracts\Validatable;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ use LVR\CreditCard\CardNumber;
  * @property User $user
  * @see Contact::user()
  */
-class Contact extends Model implements \Validatable
+class Contact extends Model implements Validatable
 {
     use HasFactory;
 
@@ -25,15 +26,6 @@ class Contact extends Model implements \Validatable
         'name',
         'telephone',
     ];
-
-    /**
-     * @return BelongsTo
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
 
     public static function rules(): array
     {
@@ -53,7 +45,7 @@ class Contact extends Model implements \Validatable
             'address' => [
                 'required'
             ],
-            'credit_card' =>[
+            'credit_card' => [
                 'required',
                 new CardNumber()
             ],
@@ -67,5 +59,13 @@ class Contact extends Model implements \Validatable
     public static function messages(): array
     {
         return [];
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

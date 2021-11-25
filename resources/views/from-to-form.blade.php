@@ -11,13 +11,13 @@
                     <form method="POST" action="{{ route('file.from-to', $hash) }}" enctype="multipart/form-data">
                         @method('PUT')
                     @csrf
-                        @foreach($model as $column)
+                        @foreach($to as $column)
                             <div>
                                 <x-label for="{{ $column }}" value="{{ $column }}"/>
 
                                 <select id="{{ $column }}" class="block mt-1 w-full" name="contact[{{ $column }}]"
                                         required>
-                                    @foreach($file as $option)
+                                    @foreach($from as $option)
                                         <option value="{{ $option }}">{{ $option }}</option>
                                     @endforeach
                                 </select>
