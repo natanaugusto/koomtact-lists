@@ -18,6 +18,9 @@
                     <x-nav-link :href="route('file.import')" :active="request()->routeIs('file.import')">
                         {{ __('Import CSV File') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('contacts')" :active="request()->routeIs('contacts')">
+                        {{ __('My Contacts') }}
+                    </x-nav-link>
                 </div>
             </div>
 

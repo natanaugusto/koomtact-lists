@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\FileImportsController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,6 +17,7 @@ Route::middleware(['auth'])->group(function () {
     $dash = fn() => view('dashboard');
     Route::get('/', $dash);
     Route::get('/dashboard', $dash)->name('dashboard');
+    Route::get('/contacts', [ContactsController::class, 'list'])->name('contacts');
 
     Route::name('file.')->prefix('/file')->group(function () {
         Route::name('import')->prefix('import')->group(function () {
