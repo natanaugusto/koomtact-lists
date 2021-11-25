@@ -19,8 +19,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', $dash)->name('dashboard');
 
     Route::name('file.')->prefix('/file')->group(function () {
-        Route::post('/import', [FileImportsController::class, 'import'])
-            ->name('import');
+        Route::name('import')->prefix('import')->group(function () {
+            Route::get('/', [FileImportsController::class, 'importForm']);
+            Route::post('/', [FileImportsController::class, 'import']);
+        });
         Route::get('/from-to/{hash}', [FileImportsController::class, 'fromTo'])
             ->name('from-to');
     });

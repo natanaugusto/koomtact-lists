@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\FileImport;
+use App\Models\User;
 use App\Services\FileImportsService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FileImportsController extends Controller
 {
@@ -15,9 +17,9 @@ class FileImportsController extends Controller
      */
     protected FileImportsService $service;
 
-    public function __construct(Request $request)
+    public function importForm(Request $request)
     {
-        $this->service = new FileImportsService($request->user());
+        return view('file-import-from');
     }
 
     /**
@@ -27,7 +29,9 @@ class FileImportsController extends Controller
      */
     public function import(Request $request): RedirectResponse
     {
-        $file = $this->service->create($request->file('file'));
+        $file = $this->getService(
+            $request->user()
+        )->create($request->file('file'));
         return response()->redirectTo(route(
             'file.from-to',
             ['hash' => $file->hash->toString()]
@@ -36,7 +40,17 @@ class FileImportsController extends Controller
 
     public function fromTo(Request $request, string $hash)
     {
-        $fromTo = $this->service->getFromToColumns($hash, Contact::class);
+        $fromTo = $this->getService(
+            $request->user()
+        )->getFromToColumns($hash, Contact::class);
         return response()->json($fromTo);
+    }
+
+    protected function getService(User $user): FileImportsService
+    {
+        if (empty($this->service)) {
+            $this->service = new FileImportsService($user);
+        }
+        return $this->service;
     }
 }

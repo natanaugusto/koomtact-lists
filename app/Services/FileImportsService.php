@@ -17,7 +17,8 @@ class FileImportsService
      * @var string[] $mimeTypeHandlers
      */
     protected static array $mimeTypeHandlers = [
-        'text/csv' => CvsHandler::class
+        'text/csv' => CvsHandler::class,
+        'application/csv' => CvsHandler::class,
     ];
     protected User $user;
 
@@ -35,7 +36,12 @@ class FileImportsService
     {
         $import = new FileImport();
         $import->user_id = $this->user->id;
-        $import->path = $file->store('tmp');
+        // That's seems ugly
+        $import->path = storage_path(
+            'app'
+            . DIRECTORY_SEPARATOR
+            . $file->store('tmp')
+        );
         $import->type = $file->getMimeType();
         $import->save();
         return $import;
