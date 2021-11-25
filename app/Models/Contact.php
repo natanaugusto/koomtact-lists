@@ -12,6 +12,8 @@ use LVR\CreditCard\CardNumber;
 /**
  * @property User $user
  * @see Contact::user()
+ * @property string $credit_card
+ * @see Contact::setCreditCardAttribute()
  */
 class Contact extends Model implements Validatable
 {
@@ -61,11 +63,30 @@ class Contact extends Model implements Validatable
         return [];
     }
 
+
+    /**
+     * @param array $options
+     * @return bool
+     */
+    public function save(array $options = [])
+    {
+        $this->franchise = 'CVV';
+        return parent::save($options);
+    }
+
     /**
      * @return BelongsTo
      */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @param $value
+     */
+    public function setCreditCardAttribute($value)
+    {
+        $this->attributes['credit_card'] = str_replace(' ', '', $value);
     }
 }

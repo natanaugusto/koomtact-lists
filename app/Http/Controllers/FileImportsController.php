@@ -10,6 +10,7 @@ use App\Services\FileImportsService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -58,7 +59,7 @@ class FileImportsController extends Controller
     public function storeFromTo(Request $request, string $hash): Response
     {
         $fileImport = $this->getService($request->user())->getHandlerByHash($hash, true);
-        $fileImport->from_to = $request->all();
+        $fileImport->from_to = Arr::except($request->all(), ['_method', '_token']);
         $fileImport->save();
         ProcessFileImports::dispatch($fileImport);
         return response(null, SymfonyResponse::HTTP_CREATED);

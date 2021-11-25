@@ -15,7 +15,7 @@
                             <div>
                                 <x-label for="{{ $column }}" value="{{ $column }}"/>
 
-                                <select id="{{ $column }}" class="block mt-1 w-full" name="contact[{{ $column }}]"
+                                <select id="{{ $column }}" class="block mt-1 w-full" name="{{ $column }}"
                                         required>
                                     @foreach($from as $option)
                                         <option value="{{ $option }}">{{ $option }}</option>

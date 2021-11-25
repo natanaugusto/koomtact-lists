@@ -17,7 +17,8 @@ class FileImportFactory extends Factory
         return [
             'user_id' => User::factory(),
             'path' => $this->faker->filePath(),
-            'type' => 'text/csv'
+            'type' => 'text/csv',
+            'from_to' => null,
         ];
     }
 }

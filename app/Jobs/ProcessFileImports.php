@@ -2,9 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Contracts\FileImportHandler;
+use App\Models\Contact;
 use App\Models\FileImport;
-use App\Models\User;
 use App\Services\FileImportsService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -36,6 +35,6 @@ class ProcessFileImports implements ShouldQueue
      */
     public function handle(FileImportsService $service)
     {
-        $service->getHandlerInstance($this->fileImport)->process();
+        $service->getHandlerInstance($this->fileImport)->process(Contact::class);
     }
 }

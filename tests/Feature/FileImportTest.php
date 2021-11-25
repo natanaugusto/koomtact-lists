@@ -47,13 +47,14 @@ class FileImportTest extends TestCase
     {
         $fileImport = FileImport::factory()->create([
             'user_id' => $this->getUser()->id,
-            'path' => $this->getPath('sample.csv')
+            'path' => $this->getPath('sample.csv'),
         ]);
+        $post = $this->getIncludeArray('sample_from_to.php');
         $response = $this->actingAs($this->getUser())
             ->put(route(
                 'file.from-to',
                 ['hash' => $fileImport->hash]
-            ), ['test' => false]);
+            ), $post);
         $response->assertStatus(SymfonyResponse::HTTP_CREATED);
     }
 }

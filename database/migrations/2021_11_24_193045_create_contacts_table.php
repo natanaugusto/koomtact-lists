@@ -18,9 +18,9 @@ class CreateContactsTable extends Migration
             $table->foreignId('user_id');
             $table->string('name');
             $table->date('birthday');
-            $table->string('telephone', 22);
+            $table->string('telephone', 24);
             $table->string('address');
-            $table->string('credit_card', 12);
+            $table->string('credit_card', 18);
             $table->string('franchise');
             $table->string('email');
             $table->timestamps();

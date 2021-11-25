@@ -18,6 +18,10 @@ class FileImport extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'from_to' => 'array'
+    ];
+
     /**
      * @return BelongsTo
      */
@@ -37,11 +41,13 @@ class FileImport extends Model
     }
 
     /**
-     * @param array $value
+     * @param ?array $value
      */
-    public function setFromToAttribute(array $value): void
+    public function setFromToAttribute(?array $value = null): void
     {
-        $this->attributes['from_to'] = json_encode($value);
+        if (is_array($value)) {
+            $this->attributes['from_to'] = json_encode($value);
+        }
     }
 
     /**

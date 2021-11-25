@@ -10,7 +10,7 @@ interface FileImportHandler
 
     public function __construct(FileImport $fileImport);
 
-    public function process(): void;
+    public function process(string $to): void;
 
     public function getFrom(): array;
 

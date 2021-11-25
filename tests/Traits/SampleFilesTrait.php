@@ -40,6 +40,6 @@ trait SampleFilesTrait
 
     protected function getIncludeArray(string $file): array
     {
-        return require_once $this->getPath($file);
+        return require $this->getPath($file);
     }
 }
