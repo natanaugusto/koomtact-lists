@@ -19,7 +19,7 @@ class FileImportsController extends Controller
 
     public function importForm(Request $request)
     {
-        return view('file-import-from');
+        return view('file-import-form');
     }
 
     /**
@@ -43,7 +43,7 @@ class FileImportsController extends Controller
         $fromTo = $this->getService(
             $request->user()
         )->getFromToColumns($hash, Contact::class);
-        return response()->json($fromTo);
+        return view('from-to-form', $fromTo);
     }
 
     protected function getService(User $user): FileImportsService
