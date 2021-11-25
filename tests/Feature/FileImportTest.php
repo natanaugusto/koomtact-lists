@@ -8,21 +8,18 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Tests\TestCase;
+use Tests\Traits\SampleFilesTrait;
+use Tests\Traits\UserTrait;
 
 class FileImportTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected User $user;
-
-    protected static string $filePath = __DIR__ . DIRECTORY_SEPARATOR . 'sample.csv';
+    use RefreshDatabase, SampleFilesTrait, UserTrait;
 
     public function test_post_file_import()
     {
-        $content = file_get_contents(self::$filePath);
-        $response = $this->actingAs($this->user)
+        $response = $this->actingAs($this->getUser())
             ->post(route('file.import'), [
-                'file' => UploadedFile::fake()->createWithContent('test.csv', $content),
+                'file' => $this->getUploadedFake('sample.csv'),
             ]);
 
         $response->assertStatus(SymfonyResponse::HTTP_FOUND)
@@ -32,23 +29,17 @@ class FileImportTest extends TestCase
             ));
     }
 
-//    public function test_get_from_to()
-//    {
-//        $file = FileImport::factory()->create([
-//            'user_id' => $this->user->id,
-//            'path' => self::$filePath,
-//        ]);
-//        $response = $this->actingAs($this->user)
-//            ->get(route(
-//                'file.from-to',
-//                ['hash' => $file->hash]
-//            ));
-//        $response->assertStatus(SymfonyResponse::HTTP_OK);
-//    }
-
-    protected function setUp(): void
+    public function test_get_from_to()
     {
-        parent::setUp();
-        $this->user = User::factory()->create();
+        $fileImport = FileImport::factory()->create([
+            'user_id' => $this->getUser()->id,
+            'path' => $this->getPath('sample.csv')
+        ]);
+        $response = $this->actingAs($this->getUser())
+            ->get(route(
+                'file.from-to',
+                ['hash' => $fileImport->hash]
+            ));
+        $response->assertStatus(SymfonyResponse::HTTP_OK);
     }
 }

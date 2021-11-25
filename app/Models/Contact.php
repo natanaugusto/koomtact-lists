@@ -14,6 +14,16 @@ class Contact extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'address',
+        'birthday',
+        'credit_card',
+        'email',
+        'franchise',
+        'name',
+        'telephone',
+    ];
+
     /**
      * @return BelongsTo
      */
