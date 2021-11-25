@@ -12,6 +12,8 @@ use Laravel\Sanctum\HasApiTokens;
 /**
  * @property $contacts
  * @see User::contacts()
+ * @property $files
+ * @see User::files()
  */
 class User extends Authenticatable
 {
@@ -50,5 +52,10 @@ class User extends Authenticatable
     public function contacts(): HasMany
     {
         return $this->hasMany(Contact::class);
+    }
+
+    public function files(): HasMany
+    {
+        return $this->hasMany(FileImport::class);
     }
 }

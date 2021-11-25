@@ -26,6 +26,8 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/', );
         });
 
+        Route::get('/list', [FileImportsController::class, 'files'])->name('list');
+
         Route::name('from-to')->prefix('/from-to/{hash}')->group(function ($hash) {
             Route::get('/', [FileImportsController::class, 'fromTo', $hash]);
             Route::put('/', [FileImportsController::class, 'storeFromTo', $hash]);

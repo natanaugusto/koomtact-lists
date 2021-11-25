@@ -4,16 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Jobs\ProcessFileImports;
 use App\Models\Contact;
-use App\Models\FileImport;
 use App\Models\User;
 use App\Services\FileImportsService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class FileImportsController extends Controller
 {
@@ -63,6 +59,11 @@ class FileImportsController extends Controller
         $fileImport->save();
         ProcessFileImports::dispatch($fileImport);
         return response()->redirectTo(route('contacts'));
+    }
+
+    public function files(Request $request): View
+    {
+        return view('files', ['files' => $request->user()->files]);
     }
 
     /**
