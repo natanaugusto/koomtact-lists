@@ -54,15 +54,15 @@ class FileImportsController extends Controller
     /**
      * @param Request $request
      * @param string $hash
-     * @return Response
+     * @return RedirectResponse
      */
-    public function storeFromTo(Request $request, string $hash): Response
+    public function storeFromTo(Request $request, string $hash): RedirectResponse
     {
         $fileImport = $this->getService($request->user())->getHandlerByHash($hash, true);
         $fileImport->from_to = Arr::except($request->all(), ['_method', '_token']);
         $fileImport->save();
         ProcessFileImports::dispatch($fileImport);
-        return response(null, SymfonyResponse::HTTP_CREATED);
+        return response()->redirectTo(route('contacts'));
     }
 
     /**

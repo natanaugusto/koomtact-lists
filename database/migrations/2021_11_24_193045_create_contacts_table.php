@@ -24,6 +24,9 @@ class CreateContactsTable extends Migration
             $table->string('franchise');
             $table->string('email');
             $table->timestamps();
+            $table->unique(['user_id', 'telephone']);
+            $table->unique(['user_id', 'credit_card']);
+            $table->unique(['user_id', 'email']);
         });
     }
 

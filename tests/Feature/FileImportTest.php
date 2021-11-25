@@ -55,6 +55,6 @@ class FileImportTest extends TestCase
                 'file.from-to',
                 ['hash' => $fileImport->hash]
             ), $post);
-        $response->assertStatus(SymfonyResponse::HTTP_CREATED);
+        $response->assertStatus(SymfonyResponse::HTTP_FOUND);
     }
 }

@@ -34,15 +34,15 @@ class Contact extends Model implements Validatable
         return [
             'name' => [
                 'required',
-                'regex' => '/^[a-zA-Z \-]*$/',
+                ['regex' => '/^[a-zA-Z \-]*$/'],
             ],
             'birthday' => [
                 'required',
-                'date_format' => DateTimeInterface::ISO8601
+                ['date_format' => DateTimeInterface::ISO8601]
             ],
             'telephone' => [
                 'required',
-                'regex' => '/^\(\+[0-9]{2,3}\)( +[0-9]{3}){2}( +[0-9]{2}){2,3}$/'
+                ['regex' => '/^\(\+[0-9]{2,3}\)( +[0-9]{3}){2}( +[0-9]{2}){2,3}$/']
             ],
             'address' => [
                 'required'

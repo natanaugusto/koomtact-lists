@@ -3,7 +3,10 @@
 namespace App\Handlers;
 
 use App\Contracts\FileImportHandler;
+use App\Contracts\Validatable;
 use App\Models\FileImport;
+use App\Models\FileImportLog;
+use Illuminate\Support\Facades\Validator;
 use League\Csv\Reader;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
@@ -60,6 +63,28 @@ class CvsHandler implements FileImportHandler
                 $register->{$to} = trim($record[$from]);
             }
         }
-        $register->save();
+        if (in_array(Validatable::class, class_implements($register))) {
+            $validator = Validator::make($register->toArray(), $register::rules());
+            if ($validator->fails()) {
+                $this->registerLog(
+                    $validator->getMessageBag()->toArray(),
+                    get_class($validator->getMessageBag())
+                );
+            }
+        }
+        try {
+            $register->save();
+        } catch (\Throwable $e) {
+            $this->registerLog(['message' => $e->getMessage()], get_class($e));
+        }
+    }
+
+    protected function registerLog(array $log, string $exception): void
+    {
+        $logImport = new FileImportLog();
+        $logImport->file_import_id = $this->fileImport->id;
+        $logImport->log = $log;
+        $logImport->exception = $exception;
+        $logImport->save();
     }
 }
