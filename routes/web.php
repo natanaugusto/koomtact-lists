@@ -20,11 +20,15 @@ Route::middleware(['auth'])->group(function () {
 
     Route::name('file.')->prefix('/file')->group(function () {
         Route::name('import')->prefix('import')->group(function () {
-            Route::get('/', [FileImportsController::class, 'importForm']);
+            Route::get('/', fn () => view('file-import-form'));
             Route::post('/', [FileImportsController::class, 'import']);
+            Route::put('/', );
         });
-        Route::get('/from-to/{hash}', [FileImportsController::class, 'fromTo'])
-            ->name('from-to');
+
+        Route::name('from-to')->prefix('/from-to/{hash}')->group(function ($hash) {
+            Route::get('/', [FileImportsController::class, 'fromTo', $hash]);
+            Route::put('/', [FileImportsController::class, 'storeFromTo', $hash]);
+        });
     });
 });
 require __DIR__ . '/auth.php';

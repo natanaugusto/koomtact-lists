@@ -68,11 +68,12 @@ class FileImportsService
     /**
      * Return a FileImport entry based on the hash
      * @param string $hash
+     * @param bool $model
      * @return object
      */
-    public function getByHash(string $hash): object
+    public function getByHash(string $hash, bool $model = false): object
     {
         $file = FileImport::byHashUser($hash, $this->user)->firstOrFail();
-        return new self::$mimeTypeHandlers[$file->type]($file);
+        return $model ? $file : new self::$mimeTypeHandlers[$file->type]($file);
     }
 }

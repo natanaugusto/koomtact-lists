@@ -8,13 +8,14 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
-                    <form method="POST" action="{{ route('file.import') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('file.from-to', $hash) }}" enctype="multipart/form-data">
+                        @method('PUT')
                     @csrf
                         @foreach($model as $column)
                             <div>
                                 <x-label for="{{ $column }}" value="{{ $column }}"/>
 
-                                <select id="{{ $column }}" class="block mt-1 w-full" name="from-to[{{ $column }}"
+                                <select id="{{ $column }}" class="block mt-1 w-full" name="contact[{{ $column }}]"
                                         required>
                                     @foreach($file as $option)
                                         <option value="{{ $option }}">{{ $option }}</option>

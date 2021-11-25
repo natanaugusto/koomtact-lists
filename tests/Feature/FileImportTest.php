@@ -42,4 +42,18 @@ class FileImportTest extends TestCase
             ));
         $response->assertStatus(SymfonyResponse::HTTP_OK);
     }
+
+    public function test_store_from_to()
+    {
+        $fileImport = FileImport::factory()->create([
+            'user_id' => $this->getUser()->id,
+            'path' => $this->getPath('sample.csv')
+        ]);
+        $response = $this->actingAs($this->getUser())
+            ->put(route(
+                'file.from-to',
+                ['hash' => $fileImport->hash]
+            ), ['test' => false]);
+        $response->assertStatus(SymfonyResponse::HTTP_CREATED);
+    }
 }
