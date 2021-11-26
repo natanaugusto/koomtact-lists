@@ -1,4 +1,5 @@
 
+
   
 
 # Koomtact
@@ -235,7 +236,14 @@ npm install
 npm run dev
 
 ```
-
 The project is using [laravel/breeze](https://github.com/laravel/breeze) on frontend.
+
+-  Add the site on /etc/host
+```shell
+sudo vim /etc/hosts
+
+# Add this line
+127.0.0.1       koomtact.local
+```
 
 That's all folks!!
