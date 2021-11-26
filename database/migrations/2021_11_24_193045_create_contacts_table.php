@@ -20,7 +20,7 @@ class CreateContactsTable extends Migration
             $table->date('birthday');
             $table->string('telephone', 24);
             $table->string('address');
-            $table->string('credit_card', 18);
+            $table->string('credit_card', 20);
             $table->string('franchise');
             $table->string('email');
             $table->timestamps();

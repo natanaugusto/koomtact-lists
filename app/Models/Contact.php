@@ -24,9 +24,16 @@ class Contact extends Model implements Validatable
         'birthday',
         'credit_card',
         'email',
-        'franchise',
         'name',
         'telephone',
+    ];
+
+    protected array $franchiseRegex = [
+        '/^34|37/' => 'American Express',
+        '/^36/' => 'Diners Club International',
+        '/^6011|[644-649]|65/' => 'Discover Card',
+        '/^[3528-3589]/' => 'JCB',
+        '/^[2221-2720]|[51–55]/' => 'Mastercard',
     ];
 
     public static function rules(): array
@@ -70,7 +77,7 @@ class Contact extends Model implements Validatable
      */
     public function save(array $options = [])
     {
-        $this->franchise = 'CVV';
+        $this->franchise = $this->getCreditCardFranchise($this->credit_card);
         return parent::save($options);
     }
 
@@ -88,5 +95,19 @@ class Contact extends Model implements Validatable
     public function setCreditCardAttribute($value)
     {
         $this->attributes['credit_card'] = str_replace(' ', '', $value);
+    }
+
+    /**
+     * @param string $credit_card
+     * @return string
+     */
+    private function getCreditCardFranchise(string $credit_card): string
+    {
+        foreach ($this->franchiseRegex as $regex => $franchise) {
+            if (preg_match($regex, $credit_card)) {
+                return $credit_card;
+            }
+        }
+        return '-';
     }
 }
