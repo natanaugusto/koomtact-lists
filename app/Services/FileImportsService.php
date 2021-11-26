@@ -53,6 +53,7 @@ class FileImportsService
             . $file->store('tmp')
         );
         $fileImport->type = $file->getMimeType();
+        $fileImport->status = FileImport::STATUS_ON_HOLD;
         $fileImport->save();
         $this->setFileImport($fileImport);
         return $fileImport;

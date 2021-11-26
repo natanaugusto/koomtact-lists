@@ -19,6 +19,11 @@ class FileImport extends Model
 {
     use HasFactory;
 
+    const STATUS_ON_HOLD = 'on_hold';
+    const STATUS_PROCESSING = 'processing';
+    const STATUS_FAILED = 'failed';
+    const STATUS_FINISHED = 'finished';
+
     protected $casts = [
         'from_to' => 'array'
     ];
@@ -31,19 +36,12 @@ class FileImport extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return HasMany
+     */
     public function logs(): HasMany
     {
         return $this->hasMany(FileImportLog::class);
-    }
-
-    /**
-     * @param array $options
-     * @return bool
-     */
-    public function save(array $options = [])
-    {
-        $this->hash = Str::uuid();
-        return parent::save($options);
     }
 
     /**
@@ -66,5 +64,35 @@ class FileImport extends Model
     {
         return $query->where('hash', $hash)
             ->where('user_id', $user->id);
+    }
+
+    /**
+     * @param array $options
+     * @return bool
+     */
+    public function save(array $options = [])
+    {
+        $this->hash = Str::uuid();
+        return parent::save($options);
+    }
+
+
+    public function switchProcessing(): void
+    {
+        $this->status = FileImport::STATUS_PROCESSING;
+        $this->save();
+    }
+
+    public function switchFailed(): void
+    {
+        $this->status = FileImport::STATUS_FAILED;
+        $this->save();
+
+    }
+
+    public function switchFinished(): void
+    {
+        $this->status = FileImport::STATUS_FINISHED;
+        $this->save();
     }
 }

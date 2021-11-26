@@ -31,6 +31,9 @@ class CvsHandlerTest extends TestCase
         );
     }
 
+    /**
+     * @throws \Exception
+     */
     public function test_process()
     {
         $contact = new Contact();
